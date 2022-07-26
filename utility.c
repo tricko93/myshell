@@ -32,3 +32,12 @@ void convertToVariable(Node *head, char *variable)
         }
         variable[sum] = '\0';
 }
+
+void deleteAll(Node *head)
+{
+        if (head)
+        {
+                deleteAll(head->next);
+                free(head);
+        }
+}

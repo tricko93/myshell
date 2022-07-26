@@ -15,5 +15,6 @@ typedef struct node
 // Forward definitions for functions.
 Node *insert(Node *head, char data[100]);
 void convertToVariable(Node *head, char *variable);
+void deleteAll(Node *head);
 
 #endif // UTILITY_H
