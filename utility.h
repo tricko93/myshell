@@ -16,5 +16,6 @@ typedef struct node
 Node *insert(Node *head, char data[100]);
 void convertToVariable(Node *head, char *variable);
 void deleteAll(Node *head);
+void removeLastElement(Node *head);
 
 #endif // UTILITY_H

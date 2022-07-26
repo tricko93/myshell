@@ -19,6 +19,17 @@ Node *insert(Node *head, char data[100])
         return temp;
 }
 
+void removeLastElement(Node *head)
+{
+        Node *temp;
+        if(head)
+        {
+                for (temp = head; temp->next->next != NULL; temp = temp->next);
+                free(temp->next);
+                temp->next = NULL;
+        }
+}
+
 void convertToVariable(Node *head, char *variable)
 {
         int offset = 0, sum = 0;
@@ -41,3 +52,4 @@ void deleteAll(Node *head)
                 free(head);
         }
 }
+
