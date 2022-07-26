@@ -1,2 +1,2 @@
 myshell:
-	gcc myshell.c -o myshell.exe
+	gcc myshell.c utility.c -o myshell.exe
