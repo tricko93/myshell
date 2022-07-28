@@ -12,10 +12,12 @@ typedef struct node
         struct node *next;
 } Node;
 
-// Forward definitions for functions.
+// Forward declarations for utility functions.
 Node *insert(Node *head, char data[100]);
 void convertToVariable(Node *head, char *variable);
 void deleteAll(Node *head);
 void removeLastElement(Node *head);
+char *split(char *s, char c);
+int position1(char *s1, char *s2);
 
 #endif // UTILITY_H

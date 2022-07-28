@@ -53,3 +53,23 @@ void deleteAll(Node *head)
         }
 }
 
+char *split(char *s, char c)
+{
+        char *pok = s;
+        while (*pok)
+                if (*pok++ == c)
+                        return --pok;
+        return NULL;
+}
+
+int position1(char *s1, char *s2)
+{
+        if (strstr(s1, s1) == NULL)
+        {
+                return -1;
+        }
+        else
+        {
+                return strstr(s1, s2) - s1;
+        }
+}
