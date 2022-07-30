@@ -174,6 +174,8 @@ int main(int argc, char const *argv[], char const *envp[])
                         strncpy(path+path_sz+1, line, line_sz);
                         path[path_sz+line_sz+1]='\0';
 
+                        // TODO: Use search for the full program path.
+
                         printf("%s\n", path);
 
                         STARTUPINFOA startup_info = {0};
