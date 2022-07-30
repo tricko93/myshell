@@ -5,21 +5,21 @@
 //
 Node *insert(Node *head, char data[100])
 {
-        Node *temp, *p;
-        temp = (Node *)malloc(sizeof(Node));
-        strncpy(temp->data, data, 100);
-        temp->next = NULL;
-        if (head == NULL)
-        {
-                head = temp;
-        }
-        else
-        {
-                for (p = head; p->next != NULL; p = p->next)
-                        ;
-                p->next = temp;
-        }
-        return temp;
+  Node *temp, *p;
+  temp = (Node *)malloc(sizeof(Node));
+  strncpy(temp->data, data, 100);
+  temp->next = NULL;
+  if (head == NULL)
+  {
+    head = temp;
+  }
+  else
+  {
+    for (p = head; p->next != NULL; p = p->next)
+      ;
+    p->next = temp;
+  }
+  return temp;
 }
 
 //
@@ -28,14 +28,14 @@ Node *insert(Node *head, char data[100])
 //
 void removeLastElement(Node *head)
 {
-        Node *temp;
-        if (head)
-        {
-                for (temp = head; temp->next->next != NULL; temp = temp->next)
-                        ;
-                free(temp->next);
-                temp->next = NULL;
-        }
+  Node *temp;
+  if (head)
+  {
+    for (temp = head; temp->next->next != NULL; temp = temp->next)
+      ;
+    free(temp->next);
+    temp->next = NULL;
+  }
 }
 
 //
@@ -45,16 +45,16 @@ void removeLastElement(Node *head)
 //
 void convertListToVariable(Node *head, char *variable)
 {
-        int offset = 0, sum = 0;
-        Node *temp = head;
-        while (temp != NULL)
-        {
-                offset = strlen(temp->data);
-                strncpy(variable + sum, temp->data, offset);
-                temp = temp->next;
-                sum += offset;
-        }
-        variable[sum] = '\0';
+  int offset = 0, sum = 0;
+  Node *temp = head;
+  while (temp != NULL)
+  {
+    offset = strlen(temp->data);
+    strncpy(variable + sum, temp->data, offset);
+    temp = temp->next;
+    sum += offset;
+  }
+  variable[sum] = '\0';
 }
 
 //
@@ -62,11 +62,11 @@ void convertListToVariable(Node *head, char *variable)
 //
 void deleteAll(Node *head)
 {
-        if (head)
-        {
-                deleteAll(head->next);
-                free(head);
-        }
+  if (head)
+  {
+    deleteAll(head->next);
+    free(head);
+  }
 }
 
 //
@@ -74,11 +74,11 @@ void deleteAll(Node *head)
 //
 char *split(char *s, char c)
 {
-        char *pok = s;
-        while (*pok)
-                if (*pok++ == c)
-                        return --pok;
-        return NULL;
+  char *pok = s;
+  while (*pok)
+    if (*pok++ == c)
+      return --pok;
+  return NULL;
 }
 
 //
@@ -87,12 +87,12 @@ char *split(char *s, char c)
 //
 int position1(char *s1, char *s2)
 {
-        if (strstr(s1, s1) == NULL)
-        {
-                return -1;
-        }
-        else
-        {
-                return strstr(s1, s2) - s1;
-        }
+  if (strstr(s1, s1) == NULL)
+  {
+    return -1;
+  }
+  else
+  {
+    return strstr(s1, s2) - s1;
+  }
 }

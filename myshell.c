@@ -2,6 +2,6 @@
 
 int main(int argc, char const *argv[], char const *envp[])
 {
-        /* code */
-        return 0;
+  /* code */
+  return 0;
 }
