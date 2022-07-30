@@ -7,6 +7,8 @@
 #include <windows.h>
 #include <stdbool.h>
 
+#define MAX_SIZE 250
+
 void CdInternalCmd(Node *head, char *line, char *path)
 {
         int command_sz = strlen(line);
@@ -79,7 +81,7 @@ int Parse(char *s, char **locations)
         char *p = strtok(s, ";");
         while (p != NULL)
         {
-                strncpy(locations[i++], p, 100);
+                strncpy(locations[i++], p, MAX_SIZE);
                 p = strtok(NULL, ";");
         }
         return i;
@@ -100,22 +102,22 @@ int ListExeFilesFromDir(char *path, char **exe_files)
                 {
                         if (strstr(dir->d_name, ".exe") || strstr(dir->d_name, ".EXE"))
                         {
-                                char str[100];
+                                char str[MAX_SIZE];
                                 int path_sz = strlen(path);
 
-                                strncpy(str, path, 100);
+                                strncpy(str, path, path_sz);
 
                                 if (path[path_sz - 1] != '\\')
                                 {
                                         str[path_sz] = '\\';
-                                        strncpy(str + path_sz + 1, dir->d_name, 100);
+                                        strncpy(str + path_sz + 1, dir->d_name, strlen(dir->d_name));
                                 }
                                 else
                                 {
-                                        strncpy(str + path_sz, dir->d_name, 100);
+                                        strncpy(str + path_sz, dir->d_name, strlen(dir->d_name));
                                 }
 
-                                strncpy(exe_files[i++], str, 100);
+                                strncpy(exe_files[i++], str, strlen(str));
                         }
                 }
 
@@ -146,7 +148,7 @@ char **AllocMem(int n)
         char **arr = (char **)malloc(sizeof(char *) * n);
         for (int i = 0; i < n; i++)
         {
-                arr[i] = (char *)malloc(sizeof(char *) * 100);
+                arr[i] = (char *)malloc(sizeof(char *) * MAX_SIZE);
         }
         return arr;
 }
@@ -214,8 +216,8 @@ int main(int argc, char const *argv[], char const *envp[])
          */
 
         Node *head = NULL;
-        char line[100];
-        char path[100];
+        char line[MAX_SIZE];
+        char path[MAX_SIZE];
         head = insert(head, "C:\\");
         convertListToVariable(head, path);
 
@@ -238,10 +240,16 @@ int main(int argc, char const *argv[], char const *envp[])
         // C:\\Windows\\System32
         // for(int i=0; i<c; i++)
         int d = ListExeFilesFromDir(array_of_strings[0], exe_files);
+                
+        for(int i=0; i<c; i++)
+        {
+                // d = ListExeFilesFromDir(array_of_strings[i], exe_files+=d);
+                printf("%s\n", array_of_strings[i]);
+        }
 
         while (1)
         {
-                fgets(line, 100, stdin);
+                fgets(line, MAX_SIZE, stdin);
                 strtok(line, "\n");
                 if (position1(line, "cd") == 0)
                 {
