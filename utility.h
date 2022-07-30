@@ -12,7 +12,7 @@ typedef struct node
         struct node *next;
 } Node;
 
-// Forward declarations for utility functions.
+// Forward Declarations.
 Node *insert(Node *head, char data[100]);
 void convertListToVariable(Node *head, char *variable);
 void deleteAll(Node *head);

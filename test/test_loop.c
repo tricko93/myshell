@@ -6,7 +6,8 @@
 #include <dirent.h>
 #include <windows.h>
 #include <stdbool.h>
-void cd_internal_cmd(Node *head, char *line, char *path)
+
+void CdInternalCmd(Node *head, char *line, char *path)
 {
         int command_sz = strlen(line);
         if (command_sz == 2) // This means only cd is typed on the input.
@@ -25,35 +26,36 @@ void cd_internal_cmd(Node *head, char *line, char *path)
                 else
                 {
                         Node *p; // Is the last element in the list.
-                        for (p = head; p->next != NULL; p = p->next);
+                        for (p = head; p->next != NULL; p = p->next)
+                                ;
                         int sz = strlen(p->data);
 
-                        if (p->data[sz-1]=='\\')
+                        if (p->data[sz - 1] == '\\')
                         {
                                 insert(head, r);
                         }
-                        else if (head->data[sz-1]!='\\' && r[0]!='\\')
+                        else if (head->data[sz - 1] != '\\' && r[0] != '\\')
                         {
-                                char str[sz+2];
-                                str[0]='\\';
-                                strncpy(str+1, r, strlen(r)+1);
+                                char str[sz + 2];
+                                str[0] = '\\';
+                                strncpy(str + 1, r, strlen(r) + 1);
                                 insert(head, str);
                         }
                         else
                                 insert(head, r);
-                
+
                         convertListToVariable(head, path);
                 }
         }
 }
 
-void echo_internal_cmd(char *line)
+void EchoInternalCmd(char *line)
 {
         char *m = split(line, ' ');
         printf("%s\n", ++m);
 }
 
-int dir(char const *path)
+int Dir(char const *path)
 {
         DIR *d;
         struct dirent *dir;
@@ -71,14 +73,14 @@ int dir(char const *path)
         return (0);
 }
 
-int parse(char *s, char **locations)
+int Parse(char *s, char **locations)
 {
-        int i=0;
+        int i = 0;
         char *p = strtok(s, ";");
-        while(p!=NULL)
+        while (p != NULL)
         {
                 strncpy(locations[i++], p, 100);
-                p=strtok(NULL, ";");
+                p = strtok(NULL, ";");
         }
         return i;
 }
@@ -86,7 +88,7 @@ int parse(char *s, char **locations)
 //
 // Creates the array with full program names (including full path).
 //
-int list_exe_files_from_dir(char *path, char **exe_files)
+int ListExeFilesFromDir(char *path, char **exe_files)
 {
         DIR *d;
         struct dirent *dir;
@@ -94,8 +96,6 @@ int list_exe_files_from_dir(char *path, char **exe_files)
         d = opendir(path);
         if (d)
         {
-                printf("%s\n", path);
-
                 while ((dir = readdir(d)) != NULL)
                 {
                         if (strstr(dir->d_name, ".exe") || strstr(dir->d_name, ".EXE"))
@@ -116,8 +116,6 @@ int list_exe_files_from_dir(char *path, char **exe_files)
                                 }
 
                                 strncpy(exe_files[i++], str, 100);
-
-                                printf("%s\n", str);
                         }
                 }
 
@@ -127,14 +125,15 @@ int list_exe_files_from_dir(char *path, char **exe_files)
         return (i);
 }
 
-void copy_envp_into_var(char const *envp[], char *path_env)
+void CopyEnvpIntoVar(char const *envp[], char *path_env)
 {
         // Copy Path string from the envp in the char array "path_env".
-        for(int i=0;envp[i]!=NULL;i++){
-                char const path[]="Path";
-                if(strncmp(envp[i], path, strlen(path)-1)==0)
+        for (int i = 0; envp[i] != NULL; i++)
+        {
+                char const path[] = "Path";
+                if (strncmp(envp[i], path, strlen(path) - 1) == 0)
                 {
-                        strncpy(path_env, envp[i]+5, strlen(envp[i]));
+                        strncpy(path_env, envp[i] + 5, strlen(envp[i]));
                 }
         }
 }
@@ -142,12 +141,12 @@ void copy_envp_into_var(char const *envp[], char *path_env)
 //
 // Allocate memory for 2d array.
 //
-char** alloc_mem(int n)
+char **AllocMem(int n)
 {
-        char **arr = (char**)malloc(sizeof(char*)*n);
-        for(int i=0; i<n; i++)
+        char **arr = (char **)malloc(sizeof(char *) * n);
+        for (int i = 0; i < n; i++)
         {
-                arr[i] = (char*)malloc(sizeof(char*)*100);
+                arr[i] = (char *)malloc(sizeof(char *) * 100);
         }
         return arr;
 }
@@ -156,12 +155,12 @@ char** alloc_mem(int n)
 // Search in the exe_files for the program we want to execute and return index
 // for that program we're looking for.
 //
-int searchMultidimensionalArray(char const **exe_files, char *program)
+int SearchMultidimensionalArray(char const **exe_files, char *program)
 {
         int i;
-        for(i=0;i<1000;i++)
+        for (i = 0; i < 1000; i++)
         {
-                if(strstr(exe_files[i], program))
+                if (strstr(exe_files[i], program))
                 {
                         break;
                 }
@@ -169,77 +168,50 @@ int searchMultidimensionalArray(char const **exe_files, char *program)
         return i;
 }
 
-void run_program(Node *head, char *line, char *path)
-{
-        char str[100];
-
-        int sz = strlen(head->data);
-        int sz_path = strlen(path);
-        int sz_line = strlen(line);
-
-        strncpy(str, path, sz_path);
-
-        Node *p; // Is the last element in the list.
-        for (p = head; p->next != NULL; p = p->next);
-
-
-        if (p->data[sz - 1] == '\\')
-        {
-                strncpy(str + sz_path, line, sz_line);
-                str[sz_line + sz_path] = '\0';
-        }
-        else
-        {
-                str[sz_path] = '\\';
-                strncpy(str + sz_path + 1, line, sz_line);
-                str[sz_path + sz_line + 1] = '\0';
-        }
-
-        printf("%s %s %s\n", str, path, line);
-}
-
+//
+// Execute given program given full path as the parameter.
+//
 void ExecuteProgram(char *program_path)
 {
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
 
-        ZeroMemory( &si, sizeof(si) );
+        ZeroMemory(&si, sizeof(si));
         si.cb = sizeof(si);
-        ZeroMemory( &pi, sizeof(pi) );
+        ZeroMemory(&pi, sizeof(pi));
 
-        // Start the child process. 
-        if( !CreateProcess( NULL,   // No module name (use command line)
-                program_path,       // Command line
-                NULL,           // Process handle not inheritable
-                NULL,           // Thread handle not inheritable
-                FALSE,          // Set handle inheritance to FALSE
-                0,              // No creation flags
-                NULL,           // Use parent's environment block
-                NULL,           // Use parent's starting directory 
-                &si,            // Pointer to STARTUPINFO structure
-                &pi )           // Pointer to PROCESS_INFORMATION structure
-        ) 
+        // Start the child process.
+        if (!CreateProcess(NULL,         // No module name (use command line)
+                           program_path, // Command line
+                           NULL,         // Process handle not inheritable
+                           NULL,         // Thread handle not inheritable
+                           FALSE,        // Set handle inheritance to FALSE
+                           0,            // No creation flags
+                           NULL,         // Use parent's environment block
+                           NULL,         // Use parent's starting directory
+                           &si,          // Pointer to STARTUPINFO structure
+                           &pi)          // Pointer to PROCESS_INFORMATION structure
+        )
         {
-                printf( "CreateProcess failed (%d).\n", GetLastError() );
+                printf("CreateProcess failed (%d).\n", GetLastError());
                 return;
         }
 
         // Wait until child process exits.
-        WaitForSingleObject( pi.hProcess, INFINITE );
+        WaitForSingleObject(pi.hProcess, INFINITE);
 
-        // Close process and thread handles. 
-        CloseHandle( pi.hProcess );
-        CloseHandle( pi.hThread );
+        // Close process and thread handles.
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
 }
 
 int main(int argc, char const *argv[], char const *envp[])
 {
 
-        /* Case#. 
+        /* Case#.
          * 1. Command given on the keyboard.
          * 2. myshell batchfile - to execute commands from the batch file.
          */
-
 
         Node *head = NULL;
         char line[100];
@@ -249,23 +221,23 @@ int main(int argc, char const *argv[], char const *envp[])
 
         char *path_env = (char *)malloc(sizeof(char) * 1000);
 
-        copy_envp_into_var(envp, path_env);
+        CopyEnvpIntoVar(envp, path_env);
 
         // Declare and allocate 30 strings in the array of strings.
-        char **array_of_strings = alloc_mem(30);
+        char **array_of_strings = AllocMem(30);
 
         // Declare and allocate 1000 strings for the all exe files
         // found in the locations from the path variable.
-        char **exe_files = alloc_mem(1000);
+        char **exe_files = AllocMem(1000);
 
         // It will separate the paths from the path string
         // into array of strings.
-        int c = parse(path_env, array_of_strings);
+        int c = Parse(path_env, array_of_strings);
 
         // Make list of exe files only for first path which is
         // C:\\Windows\\System32
         // for(int i=0; i<c; i++)
-        int d = list_exe_files_from_dir(array_of_strings[0], exe_files);
+        int d = ListExeFilesFromDir(array_of_strings[0], exe_files);
 
         while (1)
         {
@@ -273,7 +245,7 @@ int main(int argc, char const *argv[], char const *envp[])
                 strtok(line, "\n");
                 if (position1(line, "cd") == 0)
                 {
-                        cd_internal_cmd(head, line, path);
+                        CdInternalCmd(head, line, path);
                 }
                 else if (position1(line, "clr") == 0)
                 {
@@ -281,7 +253,7 @@ int main(int argc, char const *argv[], char const *envp[])
                 }
                 else if (position1(line, "dir") == 0)
                 {
-                        dir(path);
+                        Dir(path);
                 }
                 else if (position1(line, "environ") == 0)
                 {
@@ -289,9 +261,9 @@ int main(int argc, char const *argv[], char const *envp[])
                         for (i = 0; envp[i] != NULL; i++)
                                 printf("%s\n", envp[i]);
                 }
-                else if(position1(line, "echo") == 0)
+                else if (position1(line, "echo") == 0)
                 {
-                        echo_internal_cmd(line);
+                        EchoInternalCmd(line);
                 }
                 else if (position1(line, "quit") == 0)
                 {
@@ -303,26 +275,43 @@ int main(int argc, char const *argv[], char const *envp[])
                         head = NULL;
 
                         int line_sz = strlen(line);
-                        if(line[line_sz-1]!='\\')
+                        if (line[line_sz - 1] != '\\')
                         {
-                                line[line_sz]='\\';
-                                line[line_sz+1]='\0';
+                                line[line_sz] = '\\';
+                                line[line_sz + 1] = '\0';
                         }
 
-                        head = insert(head, line);     // insert new drive
+                        head = insert(head, line);         // insert new drive
                         convertListToVariable(head, path); // convert to string
                 }
                 else if (strstr(line, ".exe"))
                 {
-                        // int ind = searchMultidimensionalArray(exe_files, line);
-                        // printf("%d\n", ind);
+                        int ind = SearchMultidimensionalArray(exe_files, line);
+                        if (ind != 1000) // Not found.
+                        {
+                                char *program_full_path = exe_files[SearchMultidimensionalArray(exe_files, line)];
+                                ExecuteProgram(program_full_path);
+                        }
 
-                        // TODO: Add validation if the program is not found.
-                        char *program_path = exe_files[searchMultidimensionalArray(exe_files, line)];
 
-                        printf("%s\n", program_path);
+                        /*
+                        else
+                        {
+                                convertListToVariable(head, path);
+                                int path_sz = strlen(path);
 
-                        ExecuteProgram(program_path);
+                                if (path[path_sz]=='\\')
+                                {
+                                        strncpy(path+path_sz, line, strlen(line));
+                                }
+                                else
+                                {
+                                        strncpy(path+path_sz, '\\', 1);
+                                        strncpy(path+path_sz+1, line, strlne(line));
+                                }
+                        }
+                        */
+
                 }
         }
 
@@ -340,7 +329,6 @@ int main(int argc, char const *argv[], char const *envp[])
         free(exe_files);
 
         free(path_env);
-
 
         return 0;
 }
