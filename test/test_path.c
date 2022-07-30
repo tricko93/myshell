@@ -5,12 +5,12 @@
 
 int parse(char *s, char **locations)
 {
-        int i=0;
+        int i = 0;
         char *p = strtok(s, ";");
-        while(p!=NULL)
+        while (p != NULL)
         {
                 strncpy(locations[i++], p, 100);
-                p=strtok(NULL, ";");
+                p = strtok(NULL, ";");
         }
         return i;
 }
@@ -18,54 +18,55 @@ int parse(char *s, char **locations)
 //
 // Creates the array with full program names (including full path).
 //
-int list_exe_files_from_dir(char* path, char** exe_files)
+int list_exe_files_from_dir(char *path, char **exe_files)
 {
-	DIR *d;
-	struct dirent *dir;
-        int i=0;
-	d = opendir(path);
-	if (d)
-	{
+        DIR *d;
+        struct dirent *dir;
+        int i = 0;
+        d = opendir(path);
+        if (d)
+        {
 
-		while ((dir = readdir(d)) != NULL)
-		{
-                        if(strstr(dir->d_name, ".exe"))
+                while ((dir = readdir(d)) != NULL)
+                {
+                        if (strstr(dir->d_name, ".exe"))
                         {
                                 char str[100];
                                 int path_sz = strlen(path);
 
                                 strncpy(str, path, 100);
 
-                                if (path[path_sz-1]!='\\')
+                                if (path[path_sz - 1] != '\\')
                                 {
-                                        str[path_sz]='\\';
-                                        strncpy(str+path_sz+1, dir->d_name, 100);
+                                        str[path_sz] = '\\';
+                                        strncpy(str + path_sz + 1, dir->d_name, 100);
                                 }
                                 else
                                 {
-                                        strncpy(str+path_sz, dir->d_name, 100);
+                                        strncpy(str + path_sz, dir->d_name, 100);
                                 }
 
                                 strncpy(exe_files[i++], str, 100);
 
                                 // printf("%s\n", str);
                         }
-		}
+                }
 
-		closedir(d);
-	}
+                closedir(d);
+        }
 
-	return (i);
+        return (i);
 }
 
 void copy_envp_into_var(char const *envp[], char *path_env)
 {
         // Copy Path string from the envp in the char array "path_env".
-        for(int i=0;envp[i]!=NULL;i++){
-                char const path[]="Path";
-                if(strncmp(envp[i], path, strlen(path)-1)==0)
+        for (int i = 0; envp[i] != NULL; i++)
+        {
+                char const path[] = "Path";
+                if (strncmp(envp[i], path, strlen(path) - 1) == 0)
                 {
-                        strncpy(path_env, envp[i]+5, strlen(envp[i]));
+                        strncpy(path_env, envp[i] + 5, strlen(envp[i]));
                 }
         }
 }
@@ -73,12 +74,12 @@ void copy_envp_into_var(char const *envp[], char *path_env)
 //
 // Allocate memory for 2d array.
 //
-char** alloc_mem(int n)
+char **alloc_mem(int n)
 {
-        char **arr = (char**)malloc(sizeof(char*)*n);
-        for(int i=0; i<n; i++)
+        char **arr = (char **)malloc(sizeof(char *) * n);
+        for (int i = 0; i < n; i++)
         {
-                arr[i] = (char*)malloc(sizeof(char*)*100);
+                arr[i] = (char *)malloc(sizeof(char *) * 100);
         }
         return arr;
 }
@@ -86,28 +87,16 @@ char** alloc_mem(int n)
 int main(int argc, char const *argv[], char const *envp[])
 {
         // path_env is the copy of the envp.
-        char *path_env = (char*)malloc(sizeof(char)*1000);
+        char *path_env = (char *)malloc(sizeof(char) * 1000);
 
         copy_envp_into_var(envp, path_env);
 
         // Declare and allocate 30 strings in the array of strings.
         char **array_of_strings = alloc_mem(30);
 
-        // array_of_strings = (char**)malloc(sizeof(char*)*30);
-        // for(int i=0;i<30;i++)
-        // {
-        //         array_of_strings[i] = (char*)malloc(sizeof(char*)*100);
-        // }
-
         // Declare and allocate 1000 strings for the all exe files
         // found in the locations from the path variable.
         char **exe_files = alloc_mem(1000);
-
-        // exe_files = (char **)malloc(sizeof(char)*1000);
-        // for (int i=0;i<1000;i++)
-        // {
-        //         exe_files[i]=(char*)malloc(sizeof(char)*100);
-        // }
 
         // It will separate the paths from the path string
         // into array of strings.
@@ -118,22 +107,21 @@ int main(int argc, char const *argv[], char const *envp[])
         // for(int i=0; i<c; i++)
         list_exe_files_from_dir(array_of_strings[0], exe_files);
 
-
         // Print every path from the path env variable.
-        for(int i=0;i<c;i++) {
+        for (int i = 0; i < c; i++)
+        {
                 // printf("%d. %s\n", i+1, array_of_strings[i]);
                 printf("%s\n", exe_files[i]);
-
         }
 
         // Free up allocated memory.
-        for(int i=0; i<30; i++)
+        for (int i = 0; i < 30; i++)
         {
                 free(array_of_strings[i]);
         }
-        free (array_of_strings);
+        free(array_of_strings);
 
-        for(int i=0;i<1000;i++)
+        for (int i = 0; i < 1000; i++)
         {
                 free(exe_files[i]);
         }

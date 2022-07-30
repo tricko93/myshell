@@ -71,6 +71,103 @@ int dir(char const *path)
         return (0);
 }
 
+int parse(char *s, char **locations)
+{
+        int i=0;
+        char *p = strtok(s, ";");
+        while(p!=NULL)
+        {
+                strncpy(locations[i++], p, 100);
+                p=strtok(NULL, ";");
+        }
+        return i;
+}
+
+//
+// Creates the array with full program names (including full path).
+//
+int list_exe_files_from_dir(char *path, char **exe_files)
+{
+        DIR *d;
+        struct dirent *dir;
+        int i = 0;
+        d = opendir(path);
+        if (d)
+        {
+
+                while ((dir = readdir(d)) != NULL)
+                {
+                        if (strstr(dir->d_name, ".exe"))
+                        {
+                                char str[100];
+                                int path_sz = strlen(path);
+
+                                strncpy(str, path, 100);
+
+                                if (path[path_sz - 1] != '\\')
+                                {
+                                        str[path_sz] = '\\';
+                                        strncpy(str + path_sz + 1, dir->d_name, 100);
+                                }
+                                else
+                                {
+                                        strncpy(str + path_sz, dir->d_name, 100);
+                                }
+
+                                strncpy(exe_files[i++], str, 100);
+
+                                // printf("%s\n", str);
+                        }
+                }
+
+                closedir(d);
+        }
+
+        return (i);
+}
+
+void copy_envp_into_var(char const *envp[], char *path_env)
+{
+        // Copy Path string from the envp in the char array "path_env".
+        for(int i=0;envp[i]!=NULL;i++){
+                char const path[]="Path";
+                if(strncmp(envp[i], path, strlen(path)-1)==0)
+                {
+                        strncpy(path_env, envp[i]+5, strlen(envp[i]));
+                }
+        }
+}
+
+//
+// Allocate memory for 2d array.
+//
+char** alloc_mem(int n)
+{
+        char **arr = (char**)malloc(sizeof(char*)*n);
+        for(int i=0; i<n; i++)
+        {
+                arr[i] = (char*)malloc(sizeof(char*)*100);
+        }
+        return arr;
+}
+
+//
+// Search in the exe_files for the program we want to execute and return index
+// for that program we're looking for.
+//
+int searchMultidimensionalArray(char const **exe_files, char *program)
+{
+        int i;
+        for(i=0;i<1000;i++)
+        {
+                if(strstr(exe_files[i], program))
+                {
+                        break;
+                }
+        }
+        return i;
+}
+
 void run_program(Node *head, char *line, char *path)
 {
         char str[100];
@@ -114,6 +211,26 @@ int main(int argc, char const *argv[], char const *envp[])
         char path[100];
         head = insert(head, "C:\\");
         convertListToVariable(head, path);
+
+        char *path_env = (char *)malloc(sizeof(char) * 1000);
+
+        copy_envp_into_var(envp, path_env);
+
+        // Declare and allocate 30 strings in the array of strings.
+        char **array_of_strings = alloc_mem(30);
+
+        // Declare and allocate 1000 strings for the all exe files
+        // found in the locations from the path variable.
+        char **exe_files = alloc_mem(1000);
+
+        // It will separate the paths from the path string
+        // into array of strings.
+        int c = parse(path_env, array_of_strings);
+
+        // Make list of exe files only for first path which is
+        // C:\\Windows\\System32
+        // for(int i=0; i<c; i++)
+        list_exe_files_from_dir(array_of_strings[0], exe_files);
 
         while (1)
         {
@@ -162,21 +279,12 @@ int main(int argc, char const *argv[], char const *envp[])
                 }
                 else if (strstr(line, ".exe"))
                 {
-                        char path[100];
-                        convertListToVariable(head, path);
+                        int ind = searchMultidimensionalArray(exe_files, line);
 
-                        int path_sz = strlen(path), line_sz = strlen(line);
-                        if(path[path_sz] != '\\' && line[0]!='\\')
-                        {
-                                path[path_sz]='\\';       
-                        }
+                        // if(ind >= 0)
 
-                        strncpy(path+path_sz+1, line, line_sz);
-                        path[path_sz+line_sz+1]='\0';
-
-                        // TODO: Use search for the full program path.
-
-                        printf("%s\n", path);
+                        // TODO: Add validation if the program is not found.
+                        char *program_path = exe_files[searchMultidimensionalArray(exe_files, line)];
 
                         STARTUPINFOA startup_info = {0};
 			LPSTARTUPINFOA p_startup_info = &startup_info;
@@ -185,7 +293,7 @@ int main(int argc, char const *argv[], char const *envp[])
 
 			bool process_created = CreateProcess(
 			    NULL,
-			    path,
+			    program_path,
 			    NULL,
 			    NULL,
 			    FALSE,
@@ -194,10 +302,24 @@ int main(int argc, char const *argv[], char const *envp[])
 			    NULL,
 			    p_startup_info,
 			    p_proc_info);
-
-                        // system(path);
-                        // run_program(head, line, path);
                 }
         }
+
+        // Free up allocated memory.
+        for (int i = 0; i < 30; i++)
+        {
+                free(array_of_strings[i]);
+        }
+        free(array_of_strings);
+
+        for (int i = 0; i < 1000; i++)
+        {
+                free(exe_files[i]);
+        }
+        free(exe_files);
+
+        free(path_env);
+
+
         return 0;
 }
