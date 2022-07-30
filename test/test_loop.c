@@ -94,10 +94,11 @@ int list_exe_files_from_dir(char *path, char **exe_files)
         d = opendir(path);
         if (d)
         {
+                printf("%s\n", path);
 
                 while ((dir = readdir(d)) != NULL)
                 {
-                        if (strstr(dir->d_name, ".exe"))
+                        if (strstr(dir->d_name, ".exe") || strstr(dir->d_name, ".EXE"))
                         {
                                 char str[100];
                                 int path_sz = strlen(path);
@@ -116,7 +117,7 @@ int list_exe_files_from_dir(char *path, char **exe_files)
 
                                 strncpy(exe_files[i++], str, 100);
 
-                                // printf("%s\n", str);
+                                printf("%s\n", str);
                         }
                 }
 
@@ -197,6 +198,40 @@ void run_program(Node *head, char *line, char *path)
         printf("%s %s %s\n", str, path, line);
 }
 
+void ExecuteProgram(char *program_path)
+{
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
+
+        ZeroMemory( &si, sizeof(si) );
+        si.cb = sizeof(si);
+        ZeroMemory( &pi, sizeof(pi) );
+
+        // Start the child process. 
+        if( !CreateProcess( NULL,   // No module name (use command line)
+                program_path,       // Command line
+                NULL,           // Process handle not inheritable
+                NULL,           // Thread handle not inheritable
+                FALSE,          // Set handle inheritance to FALSE
+                0,              // No creation flags
+                NULL,           // Use parent's environment block
+                NULL,           // Use parent's starting directory 
+                &si,            // Pointer to STARTUPINFO structure
+                &pi )           // Pointer to PROCESS_INFORMATION structure
+        ) 
+        {
+                printf( "CreateProcess failed (%d).\n", GetLastError() );
+                return;
+        }
+
+        // Wait until child process exits.
+        WaitForSingleObject( pi.hProcess, INFINITE );
+
+        // Close process and thread handles. 
+        CloseHandle( pi.hProcess );
+        CloseHandle( pi.hThread );
+}
+
 int main(int argc, char const *argv[], char const *envp[])
 {
 
@@ -230,7 +265,7 @@ int main(int argc, char const *argv[], char const *envp[])
         // Make list of exe files only for first path which is
         // C:\\Windows\\System32
         // for(int i=0; i<c; i++)
-        list_exe_files_from_dir(array_of_strings[0], exe_files);
+        int d = list_exe_files_from_dir(array_of_strings[0], exe_files);
 
         while (1)
         {
@@ -279,29 +314,15 @@ int main(int argc, char const *argv[], char const *envp[])
                 }
                 else if (strstr(line, ".exe"))
                 {
-                        int ind = searchMultidimensionalArray(exe_files, line);
-
-                        // if(ind >= 0)
+                        // int ind = searchMultidimensionalArray(exe_files, line);
+                        // printf("%d\n", ind);
 
                         // TODO: Add validation if the program is not found.
                         char *program_path = exe_files[searchMultidimensionalArray(exe_files, line)];
 
-                        STARTUPINFOA startup_info = {0};
-			LPSTARTUPINFOA p_startup_info = &startup_info;
-			PROCESS_INFORMATION proc_info = {0};
-			LPPROCESS_INFORMATION p_proc_info = &proc_info;
+                        printf("%s\n", program_path);
 
-			bool process_created = CreateProcess(
-			    NULL,
-			    program_path,
-			    NULL,
-			    NULL,
-			    FALSE,
-			    DETACHED_PROCESS,
-			    NULL,
-			    NULL,
-			    p_startup_info,
-			    p_proc_info);
+                        ExecuteProgram(program_path);
                 }
         }
 
