@@ -157,8 +157,9 @@ char **AllocMem(int n)
 // Searches exe_files - to provide full path for each program on the system,
 // to be able to execute the program with CreateProcess system call.
 // Note: When const is used compiler warns about incompatible pointer type.
+// This is the reason for using const pointer.
 //
-int SearchMultidimensionalArray(char **exe_files, char *program)
+int SearchMultidimensionalArray(char** const exe_files, char *program)
 {
   int i;
   for (i = 0; i < 1000; i++)
