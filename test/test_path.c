@@ -3,7 +3,7 @@
 #include <string.h>
 #include <dirent.h>
 
-int parse(char *s, char **locations)
+int Parse(char *s, char **locations)
 {
   int i = 0;
   char *p = strtok(s, ";");
@@ -18,7 +18,7 @@ int parse(char *s, char **locations)
 //
 // Creates the array with full program names (including full path).
 //
-int list_exe_files_from_dir(char *path, char **exe_files)
+int ListExeFilesFromDir(char *path, char **exe_files)
 {
   DIR *d;
   struct dirent *dir;
@@ -58,7 +58,7 @@ int list_exe_files_from_dir(char *path, char **exe_files)
   return (i);
 }
 
-void copy_envp_into_var(char const *envp[], char *path_env)
+void CopyEnvpIntoVar(char const *envp[], char *path_env)
 {
   // Copy Path string from the envp in the char array "path_env".
   for (int i = 0; envp[i] != NULL; i++)
@@ -74,7 +74,7 @@ void copy_envp_into_var(char const *envp[], char *path_env)
 //
 // Allocate memory for 2d array.
 //
-char **alloc_mem(int n)
+char **AllocMem(int n)
 {
   char **arr = (char **)malloc(sizeof(char *) * n);
   for (int i = 0; i < n; i++)
@@ -89,23 +89,23 @@ int main(int argc, char const *argv[], char const *envp[])
   // path_env is the copy of the envp.
   char *path_env = (char *)malloc(sizeof(char) * 1000);
 
-  copy_envp_into_var(envp, path_env);
+  CopyEnvpIntoVar(envp, path_env);
 
   // Declare and allocate 30 strings in the array of strings.
-  char **array_of_strings = alloc_mem(30);
+  char **array_of_strings = AllocMem(30);
 
   // Declare and allocate 1000 strings for the all exe files
   // found in the locations from the path variable.
-  char **exe_files = alloc_mem(1000);
+  char **exe_files = AllocMem(1000);
 
   // It will separate the paths from the path string
   // into array of strings.
-  int c = parse(path_env, array_of_strings);
+  int c = Parse(path_env, array_of_strings);
 
   // Make list of exe files only for first path which is
   // C:\\Windows\\System32
   // for(int i=0; i<c; i++)
-  list_exe_files_from_dir(array_of_strings[0], exe_files);
+  ListExeFilesFromDir(array_of_strings[0], exe_files);
 
   // Print every path from the path env variable.
   for (int i = 0; i < c; i++)
