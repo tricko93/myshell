@@ -257,7 +257,7 @@ int main(int argc, char const *argv[], char const *envp[])
     }
     else if (position1(line, "dir") == 0)
     {
-      Dir(path);
+      DirInternalCmd(path);
     }
     else if (position1(line, "environ") == 0)
     {
