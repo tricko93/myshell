@@ -216,9 +216,18 @@ int main(int argc, char const *argv[], char const *envp[])
    * 1. Command given on the keyboard.
    * 2. myshell batchfile - to execute commands from the batch file.
    */
+  Node *head = NULL;
+  char line[MAX_SIZE];
+  char path[MAX_SIZE];
+  head = insert(head, "C:\\");
+  bool read_from_file=false;
+  FILE *batch_file;
 
-  Node *head = insert(head, "C:\\");
-  char line[MAX_SIZE], path[MAX_SIZE];
+  if(argc==2)
+  {
+    read_from_file=true;
+    batch_file = fopen(argv[1], "r");
+  }
 
   convertListToVariable(head, path);
 
@@ -244,7 +253,10 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
-    fgets(line, MAX_SIZE, stdin);
+    if(read_from_file)
+      fgets(line, 100, batch_file);
+    else
+      fgets(line, MAX_SIZE, stdin);
     strtok(line, "\n");
     if (position1(line, "cd") == 0)
     {
