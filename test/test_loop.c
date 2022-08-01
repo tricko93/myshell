@@ -216,10 +216,8 @@ int main(int argc, char const *argv[], char const *envp[])
    * 1. Command given on the keyboard.
    * 2. myshell batchfile - to execute commands from the batch file.
    */
-  Node *head = NULL;
-  char line[MAX_SIZE];
-  char path[MAX_SIZE];
-  head = insert(head, "C:\\");
+  Node *head = insert(head, "C:\\");;
+  char line[MAX_SIZE], path[MAX_SIZE];
   bool read_from_file = false;
   FILE *batch_file;
 
