@@ -217,10 +217,9 @@ int main(int argc, char const *argv[], char const *envp[])
    * 2. myshell batchfile - to execute commands from the batch file.
    */
 
-  Node *head = NULL;
-  char line[MAX_SIZE];
-  char path[MAX_SIZE];
-  head = insert(head, "C:\\");
+  Node *head = insert(head, "C:\\");
+  char line[MAX_SIZE], path[MAX_SIZE];
+
   convertListToVariable(head, path);
 
   char *path_env = (char *)malloc(sizeof(char) * 1000);
