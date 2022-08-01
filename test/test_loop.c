@@ -159,7 +159,7 @@ char **AllocMem(int n)
 // Note: When const is used compiler warns about incompatible pointer type.
 // This is the reason for using const pointer.
 //
-int SearchMultidimensionalArray(char** const exe_files, char *program)
+int SearchMultidimensionalArray(char **const exe_files, char *program)
 {
   int i;
   for (i = 0; i < 1000; i++)
@@ -220,12 +220,12 @@ int main(int argc, char const *argv[], char const *envp[])
   char line[MAX_SIZE];
   char path[MAX_SIZE];
   head = insert(head, "C:\\");
-  bool read_from_file=false;
+  bool read_from_file = false;
   FILE *batch_file;
 
-  if(argc==2)
+  if (argc == 2)
   {
-    read_from_file=true;
+    read_from_file = true;
     batch_file = fopen(argv[1], "r");
   }
 
@@ -253,7 +253,7 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
-    if(read_from_file)
+    if (read_from_file)
       fgets(line, 100, batch_file);
     else
       fgets(line, MAX_SIZE, stdin);
@@ -301,8 +301,29 @@ int main(int argc, char const *argv[], char const *envp[])
     }
     else if (strstr(line, ".exe"))
     {
-      char *program_full_path = exe_files[SearchMultidimensionalArray(exe_files, line)];
-      ExecuteProgram(program_full_path);
+      int ind = SearchMultidimensionalArray(exe_files, line);
+      if (ind < 1000)
+      {
+        char *program_full_path = exe_files[ind];
+        ExecuteProgram(program_full_path);
+      }
+      else
+      {
+        convertListToVariable(head, path);
+        char full_path[MAX_SIZE];
+        int path_sz = strlen(path);
+        strncpy(full_path, path, path_sz);
+        if (path[path_sz - 1] != '\\')
+        {
+          full_path[path_sz] = '\\';
+          strncpy(full_path + path_sz + 1, line, strlen(line) + 1);
+        }
+        else
+        {
+          strncpy(full_path + path_sz, line, strlen(line) + 1);
+        }
+        ExecuteProgram(full_path);
+      }
     }
   }
 
