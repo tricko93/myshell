@@ -57,7 +57,7 @@ void EchoInternalCmd(char *line)
   printf("%s\n", ++m);
 }
 
-int Dir(char const *path)
+int DirInternalCmd(char const *path)
 {
   DIR *d;
   struct dirent *dir;
