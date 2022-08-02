@@ -25,26 +25,15 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
+    char p[100];
+    printf("%s>", getcwd(p,100));
+
     fgets(line, MAX_SIZE, input);
     strtok(line, "\n");
 
     if (Position1(line, "cd")==0)
     {
-      int line_sz = strlen(line);
-      if(line_sz == 2)
-      {
-        char s[100];
-        printf("%s\n", getcwd(s, 100));
-      }
-      else
-      {
-        char *r = Split(line, ' ');
-        ++r;
-          if (chdir(r))
-          {
-            fprintf(stdout, "Specified path cannot be found.\n");
-          }
-      }
+      CdInternalCmd(line);
     }
     else if(Position1(line, "clr")==0)
       system("cls");
