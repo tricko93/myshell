@@ -13,11 +13,11 @@ typedef struct node
 } Node;
 
 // Forward Declarations.
-Node *insert(Node *head, char data[100]);
-void convertListToVariable(Node *head, char *variable);
-void deleteAll(Node *head);
-void removeLastElement(Node *head);
-char *split(char *s, char c);
-int position1(char *s1, char *s2);
+Node *Insert(Node *head, char data[100]);
+void ConvertListToVariable(Node *head, char *variable);
+void DeleteAll(Node *head);
+void RemoveLastElement(Node *head);
+char *Split(char *s, char c);
+int Position1(char *s1, char *s2);
 
 #endif // UTILITY_H

@@ -7,8 +7,11 @@
 #include <windows.h>
 #include <stdbool.h>
 
-#define MAX_SIZE 250
+#define MAX_SIZE 250  // Max size for the input buffer.
+#define MAX_PROG 3000  // Max number for the array holding all programs.
 
+// TODO: convertListToVariable can be called on one place, not two
+// (in the else if).
 void CdInternalCmd(Node *head, char *line, char *path)
 {
   int command_sz = strlen(line);
@@ -225,6 +228,10 @@ int main(int argc, char const *argv[], char const *envp[])
   {
     read_from_file = true;
     batch_file = fopen(argv[1], "r");
+    if(batch_file == NULL){
+      fprintf(stdout, "Input file was not found.\n");
+      return 1;
+    }
   }
 
   convertListToVariable(head, path);
@@ -238,7 +245,7 @@ int main(int argc, char const *argv[], char const *envp[])
 
   // Declare and allocate 1000 strings for the all exe files
   // found in the locations from the path variable.
-  char **exe_files = AllocMem(3000);
+  char **exe_files = AllocMem(MAX_PROG);
 
   // It will separate the paths from the path string
   // into array of strings.
@@ -252,7 +259,7 @@ int main(int argc, char const *argv[], char const *envp[])
   while (1)
   {
     if (read_from_file)
-      fgets(line, 100, batch_file);
+      fgets(line, MAX_SIZE, batch_file);
     else
       fgets(line, MAX_SIZE, stdin);
     strtok(line, "\n");
@@ -300,7 +307,7 @@ int main(int argc, char const *argv[], char const *envp[])
     else if (strstr(line, ".exe"))
     {
       int ind = SearchMultidimensionalArray(exe_files, line);
-      if (ind < 1000)
+      if (ind < MAX_PROG)
       {
         char *program_full_path = exe_files[ind];
         ExecuteProgram(program_full_path);
@@ -332,7 +339,7 @@ int main(int argc, char const *argv[], char const *envp[])
   }
   free(array_of_strings);
 
-  for (int i = 0; i < 3000; i++)
+  for (int i = 0; i < MAX_PROG; i++)
   {
     free(exe_files[i]);
   }
