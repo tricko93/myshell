@@ -1,5 +1,11 @@
 #include "myshell.h"
- 
+
+void EchoInternalCmd(char *line)
+{
+  char *m = Split(line, ' ');
+  printf("%s\n", ++m);
+}
+
 int main(int argc, char const *argv[], char const *envp[])
 {
   // Declare variables
@@ -46,6 +52,15 @@ int main(int argc, char const *argv[], char const *envp[])
     {
       char s[100];
       DirInternalCmd(getcwd(s, 100));
+    }
+    else if(Position1(line, "environ")==0)
+    {
+      for (int i = 0; envp[i] != NULL; i++)
+        printf("%s\n", envp[i]);
+    }
+    else if(Position1(line, "echo")==0)
+    {
+      EchoInternalCmd(line);
     }
     else if(Position1(line, "quit")==0)
       exit(0);
