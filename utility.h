@@ -22,5 +22,6 @@ void RemoveLastElement(Node *head);
 char *Split(char *s, char c);
 int Position1(char *s1, char *s2);
 int DirInternalCmd(char const *path);
+void CdInternalCmd (char* const path);
 
 #endif // UTILITY_H

@@ -114,3 +114,22 @@ int DirInternalCmd(char const *path)
 
   return (0);
 }
+
+void CdInternalCmd(char* const line)
+{
+  int line_sz = strlen(line);
+  if(line_sz == 2)
+  {
+    char s[100];
+    printf("%s\n\n", getcwd(s, 100));
+  }
+  else
+  {
+    char *r = Split(line, ' ');
+    ++r;
+    if (chdir(r))
+    {
+      fprintf(stdout, "Specified path cannot be found.\n");
+    }
+  }
+}
