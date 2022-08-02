@@ -96,3 +96,21 @@ int Position1(char *s1, char *s2)
     return strstr(s1, s2) - s1;
   }
 }
+
+int DirInternalCmd(char const *path)
+{
+  DIR *d;
+  struct dirent *dir;
+  d = opendir(path);
+  if (d)
+  {
+    while ((dir = readdir(d)) != NULL)
+    {
+      printf("%s\n", dir->d_name);
+    }
+
+    closedir(d);
+  }
+
+  return (0);
+}
