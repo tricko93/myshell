@@ -6,6 +6,17 @@ void EchoInternalCmd(char *line)
   printf("%s\n", ++m);
 }
 
+void RunProgram(char * const prog)
+{
+  char s[100];
+  getcwd(s, 100);
+  int s_sz = strlen(s);
+  s[s_sz]='\\';
+  strncpy(s+s_sz+1, prog, strlen(prog));
+  s[s_sz+1+strlen(prog)]='\0';
+  ExecuteProgram(s);
+}
+
 int main(int argc, char const *argv[], char const *envp[])
 {
   // Declare variables
@@ -53,6 +64,8 @@ int main(int argc, char const *argv[], char const *envp[])
     }
     else if(Position1(line, "quit")==0)
       exit(0);
+    else
+      RunProgram(line);
   }
 
   if(input != stdin)
