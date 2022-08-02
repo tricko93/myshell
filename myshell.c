@@ -34,7 +34,10 @@ int main(int argc, char const *argv[], char const *envp[])
       {
         char *r = Split(line, ' ');
         ++r;
-        chdir(r);
+          if (chdir(r))
+          {
+            fprintf(stdout, "Specified path cannot be found.\n");
+          }
       }
     }
     else if(Position1(line, "clr")==0)
