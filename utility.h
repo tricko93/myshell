@@ -25,7 +25,8 @@ char *Split(char *s, char c);
 int Position1(char *s1, char *s2);
 int DirInternalCmd(char const *path);
 void CdInternalCmd(char* const line);
-void ExecuteProgram(char *program_path);
+int ExecuteProgram(char *program_path);
 char *append(char const *str1, char const *str2);
+char ** ListExeFilesFromDir();
 
 #endif // UTILITY_H

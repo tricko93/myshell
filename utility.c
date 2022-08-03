@@ -137,7 +137,7 @@ void CdInternalCmd(char* const line)
 //
 // Execute given program given full path as the parameter.
 //
-void ExecuteProgram(char *program_path)
+int ExecuteProgram(char *program_path)
 {
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
@@ -160,8 +160,9 @@ void ExecuteProgram(char *program_path)
   )
   {
     printf("CreateProcess failed (%d).\n", GetLastError());
-    return;
+    return 1;
   }
+  return 0;
 }
 
 // Append creates new string with back slash added.
@@ -181,4 +182,32 @@ char *append(char const *str1, char const *str2)
   strncpy(s + ind, str2, strlen(str2));
   s[ind+strlen(str2)]='\0';
   return s;
+}
+
+// Creates list of programs from the path variable.
+// Note: Don't forget to free returned variable.
+char ** ListExeFilesFromDir()
+{
+  int i=0;
+  struct dirent *dir;
+  char **programs = (char**)malloc(sizeof(char*)*1000);
+  char *path = strtok(getenv("PATH"), ";");
+  while (path != NULL)
+  {
+    DIR *d = opendir(path);
+    if (d)
+    {
+      while ((dir = readdir(d)) != NULL)
+      {
+        if (strstr(dir->d_name, ".exe") || strstr(dir->d_name, ".EXE"))
+        {
+          programs[i++] = append(path, dir->d_name);
+        }
+      }
+      closedir(d);
+    }
+    path = strtok(NULL, ";");
+  }
+  programs[i]='\0';
+  return programs;
 }
