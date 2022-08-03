@@ -24,7 +24,6 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
-    path[100];
     printf("%s>", getcwd(path,100));
 
     fgets(line, MAX_SIZE, input);
