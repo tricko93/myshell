@@ -62,6 +62,11 @@ int main(int argc, char const *argv[], char const *envp[])
     {
       EchoInternalCmd(line);
     }
+    else if(Position1(line, "pause")==0)
+    {
+      printf("More...");
+      getchar();
+    }
     else if(Position1(line, "quit")==0)
       exit(0);
     else
