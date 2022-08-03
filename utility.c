@@ -163,3 +163,22 @@ void ExecuteProgram(char *program_path)
     return;
   }
 }
+
+// Append creates new string with back slash added.
+// Note: Don't forget to free returned variable.
+// Return allocated string of size of both strings.
+char *append(char const *str1, char const *str2)
+{
+  char *s = (char *)malloc(300);
+  int ind = strlen(str1) + 1;
+  strncpy(s, str1, ind);
+
+  if (s[ind - 2] == '\\') // Backslash included
+    ind -= 1;
+  else // Backslash not included
+    s[ind - 1] = '\\';
+
+  strncpy(s + ind, str2, strlen(str2));
+  s[ind+strlen(str2)]='\0';
+  return s;
+}
