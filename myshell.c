@@ -6,21 +6,9 @@ void EchoInternalCmd(char *line)
   printf("%s\n", ++m);
 }
 
-void RunProgram(char * const prog)
-{
-  char s[100];
-  getcwd(s, 100);
-  int s_sz = strlen(s);
-  s[s_sz]='\\';
-  strncpy(s+s_sz+1, prog, strlen(prog));
-  s[s_sz+1+strlen(prog)]='\0';
-  ExecuteProgram(s);
-}
-
 int main(int argc, char const *argv[], char const *envp[])
 {
   // Declare variables
-  Node *head = Insert(NULL, "C:\\");
   char line[MAX_SIZE], path[MAX_SIZE];
   FILE *input = stdin;
 
@@ -36,8 +24,8 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
-    char p[100];
-    printf("%s>", getcwd(p,100));
+    path[100];
+    printf("%s>", getcwd(path,100));
 
     fgets(line, MAX_SIZE, input);
     strtok(line, "\n");
@@ -70,7 +58,11 @@ int main(int argc, char const *argv[], char const *envp[])
     else if(Position1(line, "quit")==0)
       exit(0);
     else
-      RunProgram(line);
+    {
+      char * full_program_path = append(path, line);
+      ExecuteProgram(full_program_path);
+      free(full_program_path);
+    }
   }
 
   if(input != stdin)
