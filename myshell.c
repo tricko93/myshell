@@ -6,6 +6,33 @@ void EchoInternalCmd(char *line)
   printf("%s\n", ++m);
 }
 
+void RunProgram(char const *line, char const *path)
+{
+  char **programs = ListExeFilesFromDir();
+
+  int ind = -1;
+  for (int i = 0; programs[i] != '\0'; i++)
+    if (strstr(programs[i], line))
+    {
+      ind = i;
+    }
+
+  if (ind == -1)
+  {
+    char *full_program_path = append(path, line);
+    if(ExecuteProgram(full_program_path)){
+      printf("Specified program or an internal command is not found.\n");
+    }
+    free(full_program_path);
+  }
+  else
+    ExecuteProgram(programs[ind]);
+
+  // Deallocate used memory
+  for (int i = 0; programs[i] != '\0'; i++)
+    free(programs[i]);
+}
+
 int main(int argc, char const *argv[], char const *envp[])
 {
   // Declare variables
@@ -24,47 +51,43 @@ int main(int argc, char const *argv[], char const *envp[])
 
   while (1)
   {
-    printf("%s>", getcwd(path,100));
+    printf("%s>", getcwd(path, 100));
 
     fgets(line, MAX_SIZE, input);
     strtok(line, "\n");
 
-    if (Position1(line, "cd")==0)
+    if (Position1(line, "cd") == 0)
     {
       CdInternalCmd(line);
     }
-    else if(Position1(line, "clr")==0)
+    else if (Position1(line, "clr") == 0)
       system("cls");
-    else if(Position1(line, "dir")==0)
+    else if (Position1(line, "dir") == 0)
     {
       char s[100];
       DirInternalCmd(getcwd(s, 100));
     }
-    else if(Position1(line, "environ")==0)
+    else if (Position1(line, "environ") == 0)
     {
       for (int i = 0; envp[i] != NULL; i++)
         printf("%s\n", envp[i]);
     }
-    else if(Position1(line, "echo")==0)
+    else if (Position1(line, "echo") == 0)
     {
       EchoInternalCmd(line);
     }
-    else if(Position1(line, "pause")==0)
+    else if (Position1(line, "pause") == 0)
     {
       printf("More...");
       getchar();
     }
-    else if(Position1(line, "quit")==0)
+    else if (Position1(line, "quit") == 0)
       exit(0);
     else
-    {
-      char * full_program_path = append(path, line);
-      ExecuteProgram(full_program_path);
-      free(full_program_path);
-    }
+      RunProgram(line, path);
   }
 
-  if(input != stdin)
+  if (input != stdin)
     fclose(input);
 
   return 0;
