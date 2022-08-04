@@ -17,10 +17,6 @@ typedef struct node
 } Node;
 
 // Forward Declarations.
-Node *Insert(Node *head, char data[100]);
-void ConvertListToVariable(Node *head, char *variable);
-void DeleteAll(Node *head);
-void RemoveLastElement(Node *head);
 char *Split(char *s, char c);
 int Position1(char *s1, char *s2);
 int DirInternalCmd(char const *path);
