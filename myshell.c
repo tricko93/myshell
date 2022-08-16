@@ -35,14 +35,39 @@ void RunProgram(char const *line, char const *path)
 
 void HelpInternalCommand(char* const line)
 {
-  printf("cd <directory>  - Changes current default directory to <directory>.\n");
-  printf("clr             - Clears the screen.\n");
-  printf("dir <directory> - Prints the contents of the directory <directory>.\n");
-  printf("environ         - Prints all environment variables.\n");
-  printf("echo <comment>  - Prints <comment> on the screen.\n");
-  printf("help            - Help information for MyShell commands.\n");
-  printf("pause           - Pauses screen.\n");
-  printf("quit            - Exits the program.\n");
+  int line_sz = strlen(line);
+  if(line_sz == 4)
+  {
+    printf("cd <directory>  - Changes current default directory to <directory>.\n");
+    printf("clr             - Clears the screen.\n");
+    printf("dir <directory> - Prints the contents of the directory <directory>.\n");
+    printf("environ         - Prints all environment variables.\n");
+    printf("echo <comment>  - Prints <comment> on the screen.\n");
+    printf("help            - Help information for MyShell commands.\n");
+    printf("pause           - Pauses screen.\n");
+    printf("quit            - Quits the program.\n");
+  }
+  else
+  {
+    char *arg = Split(line, ' ');
+    ++arg;
+    if (strcmpi(arg, "cd") == 0)
+      printf("cd <directory>  - Changes current default directory to <directory>.\n");
+    else if (strcmpi(arg, "clr") == 0)
+      printf("clr             - Clears the screen.\n");
+    else if (strcmpi(arg, "dir") == 0)
+      printf("dir             - Clears the screen.\n");
+    else if (strcmpi(arg, "environ") == 0)
+      printf("environ         - Prints all environment variables.\n");
+    else if (strcmpi(arg, "echo") == 0)
+      printf("echo <comment>  - Prints <comment> on the screen.\n");
+    else if (strcmpi(arg, "help") == 0)
+      printf("help            - Help information for MyShell commands.\n");
+    else if (strcmpi(arg, "pause") == 0)
+      printf("pause           - Pauses screen.\n");
+    else if (strcmpi(arg, "quit") == 0)
+      printf("quit            - Quits the program.\n");
+  }
 }
 
 int main(int argc, char const *argv[], char const *envp[])
