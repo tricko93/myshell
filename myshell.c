@@ -33,6 +33,18 @@ void RunProgram(char const *line, char const *path)
     free(programs[i]);
 }
 
+void HelpInternalCommand(char* const line)
+{
+  printf("cd <directory>  - Changes current default directory to <directory>.\n");
+  printf("clr             - Clears the screen.\n");
+  printf("dir <directory> - Prints the contents of the directory <directory>.\n");
+  printf("environ         - Prints all environment variables.\n");
+  printf("echo <comment>  - Prints <comment> on the screen.\n");
+  printf("help            - Help information for MyShell commands.\n");
+  printf("pause           - Pauses screen.\n");
+  printf("quit            - Exits the program.\n");
+}
+
 int main(int argc, char const *argv[], char const *envp[])
 {
   // Declare variables
@@ -75,6 +87,10 @@ int main(int argc, char const *argv[], char const *envp[])
     else if (Position1(line, "echo") == 0)
     {
       EchoInternalCmd(line);
+    }
+    else if (Position1(line, "help") == 0)
+    {
+      HelpInternalCommand(line);
     }
     else if (Position1(line, "pause") == 0)
     {
